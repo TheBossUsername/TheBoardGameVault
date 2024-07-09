@@ -1,0 +1,25 @@
+.env
+
+auto.py
+
+images
+
+update_boardgames_cvs_file.py
+
+__pycache__/
+
+*.py[cod]
+
+.venv/
+
+venv/
+
+*.log
+
+Thumbs.db  # Windows
+
+.vscode
+
+CNAME
+
+node_modules
