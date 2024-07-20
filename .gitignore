@@ -23,3 +23,5 @@ Thumbs.db  # Windows
 CNAME
 
 node_modules
+
+board_game+ (boardgames).hyper

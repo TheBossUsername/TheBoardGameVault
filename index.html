@@ -4,16 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Board Game Website</title>
+    <style>
+        @font-face {
+            font-family: 'Rockwell';
+            src: url('Rockwell.ttf') format('truetype');
+        }
+        body {
+            background-color: #c2c4c3;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            width: 100%;
+            background-color: #000052;
+            color: #429bfa;
+            text-align: center;
+            padding: 30px 0;
+            font-size: 4em;
+            font-family: 'Rockwell', Arial, sans-serif;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 20px; /* Buffer before the footer */
+        }
+        #tableauViz {
+            width: 100%;
+            max-width: 100%;
+            height: 56.25vw; /* Maintain aspect ratio */
+            position: relative;
+        }
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #000052;
+            color: #429bfa;
+            font-size: 2em;
+            font-family: 'Rockwell', Arial, sans-serif;
+            flex-shrink: 0;
+        }
+        .footer img {
+            vertical-align: middle;
+            margin-left: 20px;
+            width: 200px; /* Increased size */
+            height: auto;
+        }
+    </style>
+    <script type="text/javascript" src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
 </head>
 <body>
-    <div class="header">
-        <h1>Board Game Website</h1>
-    </div>
-    <div class="container">
-        <iframe class="iframe-container" src="https://public.tableau.com/views/YOUR_DASHBOARD_LINK_HERE"></iframe>
+    <div class="header">The Board Game Vault</div>
+    <div class="content">
+        <div id="tableauViz"></div>
     </div>
     <div class="footer">
-        <p>© 2024 Your Name. All rights reserved.</p>
+        This Data was provided by BoardGameGeek
+        <a href="https://boardgamegeek.com" target="_blank">
+            <img src="Geek.webp" alt="BoardGameGeek Logo">
+        </a>
     </div>
+    <script type='text/javascript'>
+        var vizDiv = document.getElementById('tableauViz');
+        var vizURL = 'https://public.tableau.com/views/BoardGameDashboard_17214317991410/GameDashboard';
+        var options = {
+            width: '100%',
+            height: '100%'
+        };
+        var viz = new tableau.Viz(vizDiv, vizURL, options);
+    </script>
 </body>
 </html>
