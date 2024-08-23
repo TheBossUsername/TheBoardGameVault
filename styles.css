@@ -1,20 +1,89 @@
+@font-face {
+    font-family: 'Rockwell';
+    src: url('Rockwell.ttf') format('truetype');
+}
 
 body {
-    font-family: Arial, sans-serif;
+    background-color: #00003d;
     margin: 0;
-    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 120vh; /* 120% of the viewport height */
 }
-.header, .footer {
-    background-color: #f8f8f8;
+
+.header {
+    width: 100%;
+    background-color: #00003d;
+    color: #147df5;
+    text-align: center;
+    padding: 30px 0;
+    font-size: 4em;
+    font-family: 'Rockwell', Arial, sans-serif;
+    height: 10vh; /* 10% of the viewport height */
+    box-sizing: border-box;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    box-sizing: border-box;
+}
+
+#tableauViz {
+    width: 100%;
+    height: 100%; /* Takes up the entire viewport height */
+}
+
+.footer {
     text-align: center;
     padding: 10px 0;
+    background-color: #00003d;
+    color: #147df5;
+    font-size: 2em;
+    font-family: 'Rockwell', Arial, sans-serif;
+    height: 10vh; /* 10% of the viewport height */
+    box-sizing: border-box;
 }
-.container {
-    width: 90%;
-    margin: 0 auto;
+
+.footer img {
+    vertical-align: middle;
+    margin-left: 20px;
+    width: 200px;
+    height: auto;
 }
-.iframe-container {
-    width: 100%;
-    height: 100vh;
-    border: none;
+
+/* Responsive Design for Phones */
+@media (max-width: 768px) {
+    .header {
+        font-size: 2em; /* Smaller font size for smaller screens */
+        height: 8vh; /* Slightly reduce header height */
+    }
+    .footer {
+        font-size: 1.5em; /* Smaller font size for smaller screens */
+        height: 8vh; /* Slightly reduce footer height */
+    }
+    body {
+        height: 116vh; /* Adjust overall height to be proportional */
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        font-size: 1.5em; /* Further reduce font size for very small screens */
+        height: 8vh;
+    }
+    .footer {
+        font-size: 1em; /* Further reduce font size for very small screens */
+        height: 8vh;
+    }
+    body {
+        height: 112vh; /* Adjust overall height to be proportional */
+    }
+    .footer img {
+        width: 150px; /* Adjust image size for smaller screens */
+    }
 }
