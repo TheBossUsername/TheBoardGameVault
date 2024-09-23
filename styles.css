@@ -87,3 +87,15 @@ body {
         width: 150px; 
     }
 }
+
+.github-link {
+    font-size: 0.8em;
+    color: #0f4d92; /* Darker color */
+    text-decoration: underline;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.github-link:hover {
+    color: #147df5; /* Lighter color on hover */
+    transform: scale(1.05); /* Slightly enlarges the link when hovered */
+}
