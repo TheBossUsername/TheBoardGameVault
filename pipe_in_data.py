@@ -72,7 +72,6 @@ try:
     delete_query = text("DELETE FROM game_rank")
     connection.execute(delete_query)
 
-
     #Update the game_rank table, and add any new board games to the board_game table
     total_items = len(stripped_list)
     print(f"Length of list: {total_items}")
@@ -92,7 +91,6 @@ try:
             if old_ranks.get(row['id']) != game_rank:
                 update_query = text("UPDATE board_game SET old_rank = :val1 WHERE id = :val2")
                 connection.execute(update_query, {"val1": old_ranks.get(row['id']), "val2": row['id']})
-                
 
             print_progress_bar(game_rank, total_items)
 
@@ -127,7 +125,7 @@ try:
                     playing_time = find_text(boardgame, 'playingtime')
                     min_playing_time = find_text(boardgame, 'minplaytime')
                     max_playing_time = find_text(boardgame, 'maxplaytime')
-                    description = find_text(boardgame, 'description')
+                    full_description = find_text(boardgame, 'description')
                     thumbnail = find_text(boardgame, 'thumbnail')
                     image = find_text(boardgame, 'image')
                     subdomain = find_text(boardgame, 'boardgamesubdomain')
@@ -135,12 +133,12 @@ try:
                     bayes_average = find_text(boardgame, 'statistics/ratings/bayesaverage')
                     users_rated = find_text(boardgame, 'statistics/ratings/usersrated')
                     
-
+                    # Insert into the board_game table (without description)
                     insert_board_game_query = text("""
                         INSERT INTO board_game 
-                        (id, name, year_published, min_players, max_players, age, average_weight, playing_time, min_playing_time, max_playing_time, description, thumbnail, image, sub_domain, average, bayes_average, users_rated, old_rank) 
+                        (id, name, year_published, min_players, max_players, age, average_weight, playing_time, min_playing_time, max_playing_time, thumbnail, image, sub_domain, average, bayes_average, users_rated, old_rank) 
                         VALUES 
-                        (:game_id, :name, :year_published, :min_players, :max_players, :age, :average_weight, :playing_time, :min_playing_time, :max_playing_time, :description, :thumbnail, :image, :subdomain, :average, :bayes_average, :users_rated, :old_rank)
+                        (:game_id, :name, :year_published, :min_players, :max_players, :age, :average_weight, :playing_time, :min_playing_time, :max_playing_time, :thumbnail, :image, :subdomain, :average, :bayes_average, :users_rated, :old_rank)
                     """)
                     connection.execute(insert_board_game_query, {
                         "game_id": row['id'],
@@ -153,7 +151,6 @@ try:
                         "playing_time": playing_time,
                         "min_playing_time": min_playing_time,
                         "max_playing_time": max_playing_time,
-                        "description": description,
                         "thumbnail": thumbnail,
                         "image": image,
                         "subdomain": subdomain,
@@ -163,6 +160,22 @@ try:
                         "old_rank": None
                     })
 
+                    # Insert into the board_game_description table
+                    if full_description:
+                        # Check if the description exceeds the 8000-character limit
+                        if len(full_description) > 8000:
+                            full_description = full_description[:8000]  # Truncate the description to 8000 characters
+
+                        insert_description_query = text("""
+                            INSERT INTO board_game_description 
+                            (id, full_description) 
+                            VALUES 
+                            (:game_id, :full_description)
+                        """)
+                        connection.execute(insert_description_query, {
+                            "game_id": row['id'],
+                            "full_description": full_description
+                        })
 
 
                     insert_query = text("INSERT INTO game_rank (board_game_id, game_rank) VALUES (:val1, :val2)")
@@ -290,128 +303,147 @@ try:
             continue
         
         else:
-            root = ET.fromstring(response)
-            boardgame = root.find('boardgame')
+            try:    
+                root = ET.fromstring(response)
+                boardgame = root.find('boardgame')
 
-            # Get the data from the API
-            name = find_text(boardgame, 'name[@primary="true"]')
-            year_published = find_text(boardgame, 'yearpublished')
-            min_players = find_text(boardgame, 'minplayers')
-            max_players = find_text(boardgame, 'maxplayers')
-            age = find_text(boardgame, 'age')
-            average_weight = find_text(boardgame, 'statistics/ratings/averageweight')
-            playing_time = find_text(boardgame, 'playingtime')
-            min_playing_time = find_text(boardgame, 'minplaytime')
-            max_playing_time = find_text(boardgame, 'maxplaytime')
-            description = find_text(boardgame, 'description')
-            thumbnail = find_text(boardgame, 'thumbnail')
-            image = find_text(boardgame, 'image')
-            subdomain = find_text(boardgame, 'boardgamesubdomain')
-            average = find_text(boardgame, 'statistics/ratings/average')
-            bayes_average = find_text(boardgame, 'statistics/ratings/bayesaverage')
-            users_rated = find_text(boardgame, 'statistics/ratings/usersrated')
-            
-            update_board_game_query = text("""
-            UPDATE board_game
-            SET name = :name,
-                year_published = :year_published,
-                min_players = :min_players,
-                max_players = :max_players,
-                age = :age,
-                average_weight = :average_weight,
-                playing_time = :playing_time,
-                min_playing_time = :min_playing_time,
-                max_playing_time = :max_playing_time,
-                description = :description,
-                thumbnail = :thumbnail,
-                image = :image,
-                sub_domain = :subdomain,
-                average = :average,
-                bayes_average = :bayes_average,
-                users_rated = :users_rated
-            WHERE id = :id
-            """)
-            connection.execute(update_board_game_query, {
-                "id": id,
-                "name": name,
-                "year_published": year_published,
-                "min_players": min_players,
-                "max_players": max_players,
-                "age": age,
-                "average_weight": average_weight,
-                "playing_time": playing_time,
-                "min_playing_time": min_playing_time,
-                "max_playing_time": max_playing_time,
-                "description": description,
-                "thumbnail": thumbnail,
-                "image": image,
-                "subdomain": subdomain,
-                "average": average,
-                "bayes_average": bayes_average,
-                "users_rated": users_rated,
-            })
+                # Get the data from the API
+                name = find_text(boardgame, 'name[@primary="true"]')
+                year_published = find_text(boardgame, 'yearpublished')
+                min_players = find_text(boardgame, 'minplayers')
+                max_players = find_text(boardgame, 'maxplayers')
+                age = find_text(boardgame, 'age')
+                average_weight = find_text(boardgame, 'statistics/ratings/averageweight')
+                playing_time = find_text(boardgame, 'playingtime')
+                min_playing_time = find_text(boardgame, 'minplaytime')
+                max_playing_time = find_text(boardgame, 'maxplaytime')
+                full_description = find_text(boardgame, 'description')
+                thumbnail = find_text(boardgame, 'thumbnail')
+                image = find_text(boardgame, 'image')
+                subdomain = find_text(boardgame, 'boardgamesubdomain')
+                average = find_text(boardgame, 'statistics/ratings/average')
+                bayes_average = find_text(boardgame, 'statistics/ratings/bayesaverage')
+                users_rated = find_text(boardgame, 'statistics/ratings/usersrated')
+                
+                # Update the board_game table
+                update_board_game_query = text("""
+                UPDATE board_game
+                SET name = :name,
+                    year_published = :year_published,
+                    min_players = :min_players,
+                    max_players = :max_players,
+                    age = :age,
+                    average_weight = :average_weight,
+                    playing_time = :playing_time,
+                    min_playing_time = :min_playing_time,
+                    max_playing_time = :max_playing_time,
+                    thumbnail = :thumbnail,
+                    image = :image,
+                    sub_domain = :subdomain,
+                    average = :average,
+                    bayes_average = :bayes_average,
+                    users_rated = :users_rated
+                WHERE id = :id
+                """)
+                connection.execute(update_board_game_query, {
+                    "id": id,
+                    "name": name,
+                    "year_published": year_published,
+                    "min_players": min_players,
+                    "max_players": max_players,
+                    "age": age,
+                    "average_weight": average_weight,
+                    "playing_time": playing_time,
+                    "min_playing_time": min_playing_time,
+                    "max_playing_time": max_playing_time,
+                    "thumbnail": thumbnail,
+                    "image": image,
+                    "subdomain": subdomain,
+                    "average": average,
+                    "bayes_average": bayes_average,
+                    "users_rated": users_rated,
+                })
+
+                # Update or insert full_description in board_game_description table
+                if full_description:
+                    if len(full_description) > 8000:
+                            full_description = full_description[:8000]  # Truncate the description to 8000 characters
+
+                    insert_description_query = text("""
+                        INSERT INTO board_game_description (id, full_description)
+                        VALUES (:id, :full_description)
+                        ON DUPLICATE KEY UPDATE full_description = :full_description
+                    """)
+                    connection.execute(insert_description_query, {
+                        "id": id,
+                        "full_description": full_description
+                    })
 
 
+                # For honors
+                honors = [honor.text for honor in boardgame.findall('boardgamehonor')]
+                for honor in honors:
+                    select_query = text("SELECT * FROM honors WHERE name = :val1")
+                    result = connection.execute(select_query, {"val1": honor})
+                    honor_row = result.fetchone()
+                    if honor_row is None:
+                        insert_query = text("INSERT INTO honors (name) VALUES (:val1)")
+                        connection.execute(insert_query, {"val1": honor})
+                        honor_id = connection.execute(text("SELECT LAST_INSERT_ID()")).fetchone()[0]
+                    else:
+                        honor_id = honor_row[0]
 
-            # For honors
-            honors = [honor.text for honor in boardgame.findall('boardgamehonor')]
-            for honor in honors:
-                select_query = text("SELECT * FROM honors WHERE name = :val1")
-                result = connection.execute(select_query, {"val1": honor})
-                honor_row = result.fetchone()
-                if honor_row is None:
-                    insert_query = text("INSERT INTO honors (name) VALUES (:val1)")
-                    connection.execute(insert_query, {"val1": honor})
-                    honor_id = connection.execute(text("SELECT LAST_INSERT_ID()")).fetchone()[0]
-                else:
-                    honor_id = honor_row[0]
+                    # Check if the record already exists in the board_game_has_honors table
+                    select_query = text("SELECT * FROM board_game_has_honors WHERE board_game_id = :val1 AND honor_id = :val2")
+                    result = connection.execute(select_query, {"val1": id, "val2": honor_id})
+                    if result.rowcount == 0:
+                        insert_query = text("INSERT INTO board_game_has_honors (board_game_id, honor_id) VALUES (:val1, :val2)")
+                        connection.execute(insert_query, {"val1": id, "val2": honor_id})
 
-                # Check if the record already exists in the board_game_has_honors table
-                select_query = text("SELECT * FROM board_game_has_honors WHERE board_game_id = :val1 AND honor_id = :val2")
-                result = connection.execute(select_query, {"val1": id, "val2": honor_id})
-                if result.rowcount == 0:
-                    insert_query = text("INSERT INTO board_game_has_honors (board_game_id, honor_id) VALUES (:val1, :val2)")
-                    connection.execute(insert_query, {"val1": id, "val2": honor_id})
+                # For mechanics
+                mechanics = [mechanic.text for mechanic in boardgame.findall('boardgamemechanic')]
+                for mechanic in mechanics:
+                    select_query = text("SELECT * FROM mechanics WHERE name = :val1")
+                    result = connection.execute(select_query, {"val1": mechanic})
+                    mechanic_row = result.fetchone()
+                    if mechanic_row is None:
+                        insert_query = text("INSERT INTO mechanics (name) VALUES (:val1)")
+                        connection.execute(insert_query, {"val1": mechanic})
+                        mechanic_id = connection.execute(text("SELECT LAST_INSERT_ID()")).fetchone()[0]
+                    else:
+                        mechanic_id = mechanic_row[0]
 
-            # For mechanics
-            mechanics = [mechanic.text for mechanic in boardgame.findall('boardgamemechanic')]
-            for mechanic in mechanics:
-                select_query = text("SELECT * FROM mechanics WHERE name = :val1")
-                result = connection.execute(select_query, {"val1": mechanic})
-                mechanic_row = result.fetchone()
-                if mechanic_row is None:
-                    insert_query = text("INSERT INTO mechanics (name) VALUES (:val1)")
-                    connection.execute(insert_query, {"val1": mechanic})
-                    mechanic_id = connection.execute(text("SELECT LAST_INSERT_ID()")).fetchone()[0]
-                else:
-                    mechanic_id = mechanic_row[0]
+                    # Check if the record already exists in the board_game_has_mechanics table
+                    select_query = text("SELECT * FROM board_game_has_mechanics WHERE board_game_id = :val1 AND mechanic_id = :val2")
+                    result = connection.execute(select_query, {"val1": id, "val2": mechanic_id})
+                    if result.rowcount == 0:
+                        insert_query = text("INSERT INTO board_game_has_mechanics (board_game_id, mechanic_id) VALUES (:val1, :val2)")
+                        connection.execute(insert_query, {"val1": id, "val2": mechanic_id})
 
-                # Check if the record already exists in the board_game_has_mechanics table
-                select_query = text("SELECT * FROM board_game_has_mechanics WHERE board_game_id = :val1 AND mechanic_id = :val2")
-                result = connection.execute(select_query, {"val1": id, "val2": mechanic_id})
-                if result.rowcount == 0:
-                    insert_query = text("INSERT INTO board_game_has_mechanics (board_game_id, mechanic_id) VALUES (:val1, :val2)")
-                    connection.execute(insert_query, {"val1": id, "val2": mechanic_id})
+                # For categories
+                categories = [category.text for category in boardgame.findall('boardgamecategory')]
+                for category in categories:
+                    select_query = text("SELECT * FROM categories WHERE name = :val1")
+                    result = connection.execute(select_query, {"val1": category})
+                    category_row = result.fetchone()
+                    if category_row is None:
+                        insert_query = text("INSERT INTO categories (name) VALUES (:val1)")
+                        connection.execute(insert_query, {"val1": category})
+                        category_id = connection.execute(text("SELECT LAST_INSERT_ID()")).fetchone()[0]
+                    else:
+                        category_id = category_row[0]
 
-            # For categories
-            categories = [category.text for category in boardgame.findall('boardgamecategory')]
-            for category in categories:
-                select_query = text("SELECT * FROM categories WHERE name = :val1")
-                result = connection.execute(select_query, {"val1": category})
-                category_row = result.fetchone()
-                if category_row is None:
-                    insert_query = text("INSERT INTO categories (name) VALUES (:val1)")
-                    connection.execute(insert_query, {"val1": category})
-                    category_id = connection.execute(text("SELECT LAST_INSERT_ID()")).fetchone()[0]
-                else:
-                    category_id = category_row[0]
-
-                # Check if the record already exists in the board_game_has_categories table
-                select_query = text("SELECT * FROM board_game_has_categories WHERE board_game_id = :val1 AND category_id = :val2")
-                result = connection.execute(select_query, {"val1": id, "val2": category_id})
-                if result.rowcount == 0:
-                    insert_query = text("INSERT INTO board_game_has_categories (board_game_id, category_id) VALUES (:val1, :val2)")
-                    connection.execute(insert_query, {"val1": id, "val2": category_id})
+                    # Check if the record already exists in the board_game_has_categories table
+                    select_query = text("SELECT * FROM board_game_has_categories WHERE board_game_id = :val1 AND category_id = :val2")
+                    result = connection.execute(select_query, {"val1": id, "val2": category_id})
+                    if result.rowcount == 0:
+                        insert_query = text("INSERT INTO board_game_has_categories (board_game_id, category_id) VALUES (:val1, :val2)")
+                        connection.execute(insert_query, {"val1": id, "val2": category_id})
+            except ET.ParseError as e:
+                # Catch the ParseError, log it, and continue with the next game
+                print(f"Error parsing XML for game ID {row['id']}: {e}")
+                errored_ids.append(row['id'])
+                continue  # Skip to the next game
 
             print_progress_bar(update, total_items)
             update += 1
@@ -435,7 +467,6 @@ try:
     transaction.commit()
 
 except Exception as e:
-    # transaction.commit()
     transaction.rollback()
     print(f"An error occurred: {e}")
     traceback.print_exc()
