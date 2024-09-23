@@ -26,7 +26,8 @@ I went to Tableau to create data visualizations for a detailed view of the game.
 
 I shifted my entire website design approach from using JavaScript to displaying a Tableau dashboard. Although JavaScript offers more flexibility and customization, for the large volumes of data I was handling, Tableau proved to be faster at processing.
 
-If you want to view the half-finished JavaScript version of the website, [click here](https://thebossusername.github.io/Senior-Project/).
+If you want to view the half-finished JavaScript version of the website, [Old Website](https://thebossusername.github.io/Senior-Project/).
+Or the Github Repository here [Repository](https://github.com/TheBossUsername/Senior-Project).
 
 Tableau is excellent for creating beautiful charts, but it's not as effective for generating lists. After conducting extensive research and making small adjustments over time, I was able to create an appealing dashboard featuring filterable board games and a detailed individual view.
 
