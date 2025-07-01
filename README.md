@@ -35,4 +35,4 @@ Tableau is excellent for creating beautiful charts, but it's not as effective fo
 
 TheBoardGameVault.com is a continually evolving project that aims to make finding the perfect board game as easy as possible. With regularly updated data, intuitive filters, and a focus on user preferences, it's a valuable tool for any board game enthusiast.
 
-Visit the website at [TheBoardGameVault.com](https://theboardgamevault.com) and discover your next favorite game!
+Visit the website at [TheBoardGameVault.com](https://theboardgamevault.scott.it.com) and discover your next favorite game!
