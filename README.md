@@ -8,7 +8,7 @@ As one who loves board games, I know firsthand how challenging it can be to disc
 - Have you ever wanted a reliable list of games based on your favorite game mechanics?
 - And even if you found such lists, did you struggle to navigate the excessive content and links on websites?
 
-To solve these problems, I created a regularly updated database of board games made available on my website [TheBoardGameVault.com](https://theboardgamevault.com). Games are displayed in a list format, allowing you to locate the top games based on your preferences such as the number of players, game mechanics, categories, and more.
+To solve these problems, I created a regularly updated database of board games made available on my website [TheBoardGameVault.com](https://brendenscott.github.io/TheBoardGameVault/). Games are displayed in a list format, allowing you to locate the top games based on your preferences such as the number of players, game mechanics, categories, and more.
 
 ## Chapter 1: Creating a Database
 
@@ -26,13 +26,17 @@ I went to Tableau to create data visualizations for a detailed view of the game.
 
 I shifted my entire website design approach from using JavaScript to displaying a Tableau dashboard. Although JavaScript offers more flexibility and customization, for the large volumes of data I was handling, Tableau proved to be faster at processing.
 
-If you want to view the half-finished JavaScript version of the website, [Old Website](https://thebossusername.github.io/Senior-Project/).
-Or the Github Repository here [Repository](https://github.com/TheBossUsername/Senior-Project).
+If you want to view the half-finished JavaScript version of the website [Here](https://brendenscott.github.io/Javascript-Board-Game-Website/).
+Or the Github Repository here [Here](https://github.com/BrendenScott/Javascript-Board-Game-Website).
 
 Tableau is excellent for creating beautiful charts, but it's not as effective for generating lists. After conducting extensive research and making small adjustments over time, I was able to create an appealing dashboard featuring filterable board games and a detailed individual view.
 
 ## Conclusion
 
-TheBoardGameVault.com is a continually evolving project that aims to make finding the perfect board game as easy as possible. With regularly updated data, intuitive filters, and a focus on user preferences, it's a valuable tool for any board game enthusiast.
+TheBoardGameVault.com is a continually evolving project that aims to make finding the perfect board game as easy as possible. With intuitive filters, and a focus on user preferences, it's a valuable tool for any board game enthusiast. 
 
-Visit the website at [TheBoardGameVault.com](https://theboardgamevault.com) and discover your next favorite game!
+## Note
+
+The database was made on a older laptop and I have not edited the script to forward to a new database. So the data as of now is accurate as of 2024-06-15.
+
+Visit the website [Here](https://brendenscott.github.io/TheBoardGameVault/) and discover your next favorite game!
